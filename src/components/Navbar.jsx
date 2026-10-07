@@ -21,7 +21,6 @@ function Navbar() {
     <header className="navbar">
       <div className="nav-container">
 
-        {/* LOGO */}
         <Link
           to={role === "admin" ? "/dashboard" : "/analytics"}
           className="logo"
@@ -35,7 +34,6 @@ function Navbar() {
           </div>
         </Link>
 
-        {/* MOBILE MENU */}
         <button
           className="menu-button"
           onClick={() => setMenuOpen(!menuOpen)}
@@ -61,7 +59,7 @@ function Navbar() {
             </NavLink>
           )}
 
-          {/* ADMIN + FACULTY */}
+          {/* BOTH ADMIN + FACULTY */}
           <NavLink
             to="/analytics"
             onClick={closeMenu}
@@ -69,15 +67,16 @@ function Navbar() {
             Analytics
           </NavLink>
 
-          {/* ADMIN + FACULTY */}
-          <NavLink
-            to="/complaint"
-            onClick={closeMenu}
-          >
-            Complaint
-          </NavLink>
+          {/* FACULTY ONLY */}
+          {role === "faculty" && (
+            <NavLink
+              to="/complaint"
+              onClick={closeMenu}
+            >
+              Complaint
+            </NavLink>
+          )}
 
-          {/* LOGOUT */}
           <button
             className="logout"
             onClick={handleLogout}

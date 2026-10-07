@@ -18,11 +18,19 @@ const buildings = [
   "Administrative Block"
 ];
 
+const severities = ["Low", "Medium", "High", "Critical"];
+const affectedUsersOptions = ["1 - 5 Users", "6 - 20 Users", "21 - 50 Users", "51 - 100 Users", "100+ Users"];
+const durationOptions = ["Less than 1 Hour", "1 to 8 Hours", "8 to 24 Hours", "1 to 3 Days", "More than 3 Days"];
+
 function Complaint() {
   const [form, setForm] = useState({
+    userType: "Student",
     category: "",
     building: "",
     room: "",
+    severity: "",
+    affectedUsers: "",
+    issueDuration: "",
     description: ""
   });
 
@@ -42,12 +50,15 @@ function Complaint() {
 
   function resetForm() {
     setForm({
+      userType: "Student",
       category: "",
       building: "",
       room: "",
+      severity: "",
+      affectedUsers: "",
+      issueDuration: "",
       description: ""
     });
-
     setSubmitted(false);
   }
 
@@ -55,26 +66,20 @@ function Complaint() {
     return (
       <>
         <Navbar />
-
         <main className="success-page">
           <div className="success-card">
             <div className="success-icon">✓</div>
-
             <span className="eyebrow">SUCCESS</span>
-
             <h1>Complaint Submitted!</h1>
-
             <p>
               Your complaint has been successfully
               recorded for staff review.
             </p>
-
             <div className="ticket">
               <span>Ticket Number</span>
               <strong>CP-1048</strong>
               <small>AI analysis started</small>
             </div>
-
             <button
               className="primary-button"
               onClick={resetForm}
@@ -90,17 +95,13 @@ function Complaint() {
   return (
     <>
       <Navbar />
-
       <main className="page">
         <div className="container">
-
           <section className="page-heading">
             <span className="eyebrow">
-              FACULTY COMPLAINTS
+              CAMPUS COMPLAINTS
             </span>
-
             <h1>Report an Issue</h1>
-
             <p>
               Tell us what needs attention.
             </p>
@@ -110,17 +111,41 @@ function Complaint() {
             className="complaint-layout"
             onSubmit={handleSubmit}
           >
-
             <div className="card form-card">
+
+              {/* User Role Toggle */}
+              <div className="form-section">
+                <div className="step">01</div>
+                <div>
+                  <h2>Who is reporting?</h2>
+                  <p>Select your role on campus.</p>
+                  <div className="choice-grid">
+                    {["Student", "Teacher"].map((role) => (
+                      <button
+                        type="button"
+                        key={role}
+                        className={
+                          form.userType === role
+                            ? "choice selected"
+                            : "choice"
+                        }
+                        onClick={() =>
+                          setForm({ ...form, userType: role })
+                        }
+                      >
+                        {role}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              </div>
 
               {/* Category */}
               <div className="form-section">
-                <div className="step">01</div>
-
+                <div className="step">02</div>
                 <div>
                   <h2>What is the problem?</h2>
                   <p>Select a category.</p>
-
                   <div className="choice-grid">
                     {categories.map((category) => (
                       <button
@@ -132,10 +157,7 @@ function Complaint() {
                             : "choice"
                         }
                         onClick={() =>
-                          setForm({
-                            ...form,
-                            category: category
-                          })
+                          setForm({ ...form, category: category })
                         }
                       >
                         {category}
@@ -147,30 +169,22 @@ function Complaint() {
 
               {/* Location */}
               <div className="form-section">
-                <div className="step">02</div>
-
+                <div className="step">03</div>
                 <div className="form-fields">
                   <h2>Where is it?</h2>
                   <p>Enter the location of the issue.</p>
-
+                  
                   <label>
                     Building
-
                     <select
                       name="building"
                       value={form.building}
                       onChange={handleChange}
                       required
                     >
-                      <option value="">
-                        Select building
-                      </option>
-
+                      <option value="">Select building</option>
                       {buildings.map((building) => (
-                        <option
-                          key={building}
-                          value={building}
-                        >
+                        <option key={building} value={building}>
                           {building}
                         </option>
                       ))}
@@ -179,7 +193,6 @@ function Complaint() {
 
                   <label>
                     Room / Floor
-
                     <input
                       name="room"
                       value={form.room}
@@ -191,17 +204,72 @@ function Complaint() {
                 </div>
               </div>
 
+              {/* Issue Details (Severity, Users, Duration) */}
+              <div className="form-section">
+                <div className="step">04</div>
+                <div className="form-fields">
+                  <h2>Issue Details</h2>
+                  <p>Provide specifics to help AI routing.</p>
+
+                  <label className="select-label">
+                    Severity
+                    <select
+                      name="severity"
+                      value={form.severity}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">Select severity</option>
+                      {severities.map((level) => (
+                        <option key={level} value={level}>
+                          {level}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <label className="select-label">
+                    Number of Affected Users
+                    <select
+                      name="affectedUsers"
+                      value={form.affectedUsers}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">Select affected users</option>
+                      {affectedUsersOptions.map((range) => (
+                        <option key={range} value={range}>
+                          {range}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  <label className="select-label">
+                    Issue Duration
+                    <select
+                      name="issueDuration"
+                      value={form.issueDuration}
+                      onChange={handleChange}
+                      required
+                    >
+                      <option value="">Select issue duration</option>
+                      {durationOptions.map((duration) => (
+                        <option key={duration} value={duration}>
+                          {duration}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+                </div>
+              </div>
+
               {/* Description */}
               <div className="form-section">
-                <div className="step">03</div>
-
+                <div className="step">05</div>
                 <div className="form-fields">
                   <h2>Describe the issue</h2>
-
-                  <p>
-                    Explain what happened.
-                  </p>
-
+                  <p>Explain what happened.</p>
                   <textarea
                     name="description"
                     value={form.description}
@@ -214,18 +282,13 @@ function Complaint() {
 
               {/* Photo */}
               <div className="form-section">
-                <div className="step">04</div>
-
+                <div className="step">06</div>
                 <div>
                   <h2>
                     Add a photo
                     <small> optional</small>
                   </h2>
-
-                  <p>
-                    Add a photo if it helps explain the issue.
-                  </p>
-
+                  <p>Add a photo if it helps explain the issue.</p>
                   <input
                     type="file"
                     accept="image/*"
@@ -239,27 +302,20 @@ function Complaint() {
               >
                 Submit Complaint →
               </button>
-
             </div>
 
             {/* Tips */}
             <aside className="card tips-card">
-              <span className="eyebrow">
-                QUICK GUIDE
-              </span>
-
-              <h2>
-                Better reports get faster resolutions.
-              </h2>
-
+              <span className="eyebrow">QUICK GUIDE</span>
+              <h2>Better reports get faster resolutions.</h2>
               <ul>
-                <li>Select the correct category.</li>
+                <li>Ensure you select your correct role (Teacher/Student).</li>
+                <li>Select the correct category & severity.</li>
                 <li>Mention the exact location.</li>
                 <li>Explain the problem clearly.</li>
                 <li>Add a photo if useful.</li>
               </ul>
             </aside>
-
           </form>
         </div>
       </main>

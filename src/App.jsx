@@ -5,7 +5,6 @@ import Dashboard from "./pages/Dashboard";
 import Analytics from "./pages/Analytics";
 import Complaint from "./pages/Complaint";
 
-// Only Admin can access Dashboard
 function AdminRoute({ children }) {
   const role = localStorage.getItem("campusRole");
 
@@ -16,7 +15,16 @@ function AdminRoute({ children }) {
   return children;
 }
 
-// Admin + Faculty can access Analytics and Complaint
+function FacultyRoute({ children }) {
+  const role = localStorage.getItem("campusRole");
+
+  if (role !== "faculty") {
+    return <Navigate to="/dashboard" replace />;
+  }
+
+  return children;
+}
+
 function AuthRoute({ children }) {
   const role = localStorage.getItem("campusRole");
 
@@ -31,19 +39,17 @@ function App() {
   return (
     <Routes>
 
-      {/* Default */}
       <Route
         path="/"
         element={<Navigate to="/login" replace />}
       />
 
-      {/* Login */}
       <Route
         path="/login"
         element={<Login />}
       />
 
-      {/* DASHBOARD - ADMIN ONLY */}
+      {/* ADMIN ONLY */}
       <Route
         path="/dashboard"
         element={
@@ -53,7 +59,7 @@ function App() {
         }
       />
 
-      {/* ANALYTICS - ADMIN + FACULTY */}
+      {/* ADMIN + FACULTY */}
       <Route
         path="/analytics"
         element={
@@ -63,17 +69,16 @@ function App() {
         }
       />
 
-      {/* COMPLAINT - ADMIN + FACULTY */}
+      {/* FACULTY ONLY */}
       <Route
         path="/complaint"
         element={
-          <AuthRoute>
+          <FacultyRoute>
             <Complaint />
-          </AuthRoute>
+          </FacultyRoute>
         }
       />
 
-      {/* Unknown URL */}
       <Route
         path="*"
         element={<Navigate to="/login" replace />}
